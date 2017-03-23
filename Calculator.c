@@ -23,30 +23,30 @@ int main(void)
 {
 	
 	listnode_t* head = create_listnode_link(NULL, 2.0, 0, 0);
-	char input = 'd';
-	while(input != '/') {
+	char input[1], input_c[1], input_f[1];
+	double input_d[1];
+	for(;input[0] != '/';) {
+		input[0] = 0;
 		printf("input a type\n");
-		fflush(stdout);
-		scanf("%c",&input);
-		char input_c = 0, input_f = 0;
-		double input_d = 0;
-		if(input == 'd') {
+		scanf(" %c",&input[0]);
+		input_c[0] = 0;
+		input_f[0] = 0;
+		input_d[0] = 0;
+		if(input[0] == 'd') {
 			printf("input a number\n");
-			fflush(stdout);
-			scanf("%lf",&input_d);
-			head = create_listnode_link(head, 0, 0, input_d);
-		} else if(input == 'c') {
+			scanf(" %lf",&input_d[0]);
+			head = create_listnode_link(head, input_d[0], 0, 0);
+		} else if(input[0] == 'c') {
 			printf("input a variable\n");
-			fflush(stdout);
-			scanf("%c",&input_c);
-			head = create_listnode_link(head, 0, input, 0);
-		} else if(input == 'f') {
+			scanf(" %c",&input_c[0]);
+			head = create_listnode_link(head, 0, input_c[0], 0);
+		} else if(input[0] == 'f') {
 			printf("input a function\n");
-			fflush(stdout);
-			scanf("%c",&input_f);
-			head = create_listnode_link(head, 0, 0, input_f);
+			scanf(" %c",&input_f[0]);
+			head = create_listnode_link(head, 0, 0, input_f[0]);
 		}
 	}
-	scanf("%c",&input);
-	find_variable_value(head, input);
+	printf("input a variable to solve for\n");
+	scanf(" %c",&input[0]);
+	find_variable_value(head, input[0]);
 }
