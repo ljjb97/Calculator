@@ -146,7 +146,9 @@ listnode_t* calculate(listnode_t* function)
 	for(;function->next != NULL;) {
 		listnode_t* first = NULL;
 		first = order_of_ops(function);
-		if(moving->next == first) {
+		if(first == NULL){
+			return function;
+		} else if(moving->next == first) {
 			if(first->funct[0] == '(') {
 			}else if(first->funct[0] == '*') {
 				moving->double_value[0] = moving->double_value[0] * first->next->double_value[0];
@@ -165,12 +167,25 @@ listnode_t* calculate(listnode_t* function)
 			}
 		} else if(moving->next == NULL) {
 			moving = function; 
-		} else if(first == NULL){
-			return function;
-		}else {
+		} else {
 			moving = moving->next;
 		}
 	}
 	return function;
 
+}
+
+int print_function(listnode_t *function)
+{
+	for(;function != NULL; function = function->next) {
+		if(function->double_value != NULL) {
+			printf("%lf",function->double_value[0]);
+		}else if(function->char_value != NULL) {
+			printf("%c",function->char_value[0]);
+		}else if(function->funct != NULL) {
+			printf("%c",function->funct[0]);
+		}
+	}
+	printf("\n");
+	return(0);
 }

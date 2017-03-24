@@ -2,7 +2,7 @@
 
 /*Finds what the inputed variable is equal to given a
 pointer to a function*/
-listnode_t* find_variable_value(listnode_t *function, char variable)
+listnode_t* find_variable_value(listnode_t *function,const char variable)
 {
 	assert(function != NULL);
 	listnode_t* right_side,* answer;
@@ -21,32 +21,39 @@ listnode_t* find_variable_value(listnode_t *function, char variable)
 
 int main(void)
 {
-	
-	listnode_t* head = create_listnode_link(NULL, 2.0, 0, 0);
-	char input[1], input_c[1], input_f[1];
-	double input_d[1];
-	for(;input[0] != '/';) {
+	listnode_t* head = NULL;
+	char input[3];
+	char *ptr;
+	printf("input\n");
+	for(double i, k;input[0] != '\\';) {
 		input[0] = 0;
-		printf("input a type\n");
-		scanf(" %c",&input[0]);
-		input_c[0] = 0;
-		input_f[0] = 0;
-		input_d[0] = 0;
-		if(input[0] == 'd') {
-			printf("input a number\n");
-			scanf(" %lf",&input_d[0]);
-			head = create_listnode_link(head, input_d[0], 0, 0);
-		} else if(input[0] == 'c') {
-			printf("input a variable\n");
-			scanf(" %c",&input_c[0]);
-			head = create_listnode_link(head, 0, input_c[0], 0);
-		} else if(input[0] == 'f') {
-			printf("input a function\n");
-			scanf(" %c",&input_f[0]);
-			head = create_listnode_link(head, 0, 0, input_f[0]);
+		scanf(" %s", input);
+		i = strtod(input, &ptr);
+		k = ptr[0];
+		if(input[0] == '\\') {
+		} else if(i != 0) {
+			if(head == NULL) {
+				head = create_listnode_link(NULL, i, 0, 0);
+			} else {
+				head = create_listnode_link(head, i, 0, 0);
+			}
+		} else if(k >= 65) {
+			if(head == NULL) {
+				head = create_listnode_link(NULL, 0, ptr[0], 0);
+			} else {
+				head = create_listnode_link(head, 0, ptr[0], 0);
+			}
+		} else if(k < 65) {
+			if(head == NULL) {
+				head = create_listnode_link(NULL, 0, 0, ptr[0]);
+			} else {
+				head = create_listnode_link(head, 0, 0, ptr[0]);
+			}
 		}
 	}
+	print_function(head);
 	printf("input a variable to solve for\n");
-	scanf(" %c",&input[0]);
+	input[0] = 0;
+	scanf(" %s", input);
 	find_variable_value(head, input[0]);
 }
