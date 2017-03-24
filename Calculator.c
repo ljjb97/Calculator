@@ -22,6 +22,7 @@ listnode_t* find_variable_value(listnode_t *function,const char variable)
 int main(void)
 {
 	listnode_t* head = NULL;
+	listnode_t* end = NULL;
 	char input[3];
 	char *ptr;
 	printf("input\n");
@@ -34,24 +35,27 @@ int main(void)
 		} else if(i != 0) {
 			if(head == NULL) {
 				head = create_listnode_link(NULL, i, 0, 0);
+				end = head;
 			} else {
-				head = create_listnode_link(head, i, 0, 0);
+				end = append(end, ptr[0], i);
 			}
 		} else if(k >= 65) {
 			if(head == NULL) {
 				head = create_listnode_link(NULL, 0, ptr[0], 0);
+				end = head;
 			} else {
-				head = create_listnode_link(head, 0, ptr[0], 0);
+				end = append(end, ptr[0], i);
 			}
 		} else if(k < 65) {
 			if(head == NULL) {
 				head = create_listnode_link(NULL, 0, 0, ptr[0]);
+				end = head;
 			} else {
-				head = create_listnode_link(head, 0, 0, ptr[0]);
+				end = append(end, ptr[0], i);
 			}
 		}
+		print_function(head);
 	}
-	print_function(head);
 	printf("input a variable to solve for\n");
 	input[0] = 0;
 	scanf(" %s", input);

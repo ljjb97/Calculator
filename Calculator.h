@@ -57,6 +57,27 @@ char char_value, char funct)
 	
 }
 
+listnode_t* append(listnode_t *end, int k, double i ) {
+	listnode_t* new_link;
+	if(i != 0) {
+		new_link = create_listnode_link(NULL, i, 0, 0);
+		new_link->previous = end;
+		end->next = new_link;
+		end = new_link;
+	} else if(k >= 65) {
+		new_link = create_listnode_link(NULL, 0, k, 0);
+		new_link->previous = end;
+		end->next = new_link;
+		end = new_link;
+	} else if(k < 65) {
+		new_link = create_listnode_link(NULL, 0, 0, k);
+		new_link->previous = end;
+		end->next = new_link;
+		end = new_link;
+	}
+	return end;
+}
+
 
 listnode_t* move(listnode_t *function, listnode_t *origin, listnode_t *destination) /*moves a node from origin to after destination address*/
 {
