@@ -11,6 +11,13 @@ typedef struct listnode {
 	struct listnode* previous;
 } listnode_t;
 
+typedef struct order_que {
+	int order_number;
+	listnode_t * ptr;
+	struct order_que* next;
+	struct order_que* previous;
+} order_que_t;
+
 listnode_t *create_listnode_link(listnode_t* next_link,double double_value,
 char char_value, char funct)
 {
@@ -78,6 +85,54 @@ listnode_t* append(listnode_t *end, int k, double i ) {
 	return end;
 }
 
+order_que_t* insert_que(order_que_t *start, listnode_t *link, int order)
+{
+	order_que_t *ptr, *temp = start;
+	ptr = malloc(sizeof(order_que_t));
+	for(;;){
+		if(start == NULL) {
+			ptr->next = NULL;
+			ptr->previous = NULL;
+			ptr->order_number = order;
+			ptr->ptr = link;
+			return ptr;
+		} else if(start->order_number < order) {
+			ptr->previous = start->previous;
+			ptr->next = start;
+			start->previous = ptr;
+			ptr->ptr = link;
+			ptr->order_number = order;
+			return temp->previous;
+ 		} else if(start->next == NULL) {
+			ptr->previous = start;
+			start->next = ptr;
+			ptr->next = NULL;
+			ptr->ptr = link;
+			ptr->order_number = order;
+			return temp;
+		} else if(start->order_number >= order) {
+			start = start->next;
+		}
+	}
+}
+
+listnode_t *deque(order_que_t *start, order_que_t **startad) 
+{
+	listnode_t *temp1 = start->ptr;
+	printf("8");
+	order_que_t *temp2 = start->next;
+	printf("9");
+	if(temp2 != NULL) {
+		temp2->previous = NULL;
+	}
+	*startad = temp2;
+	free(start);
+	printf("10");
+	return temp1;
+}
+
+
+
 
 listnode_t* move(listnode_t *function, listnode_t *origin, listnode_t *destination) /*moves a node from origin to after destination address*/
 {
@@ -134,63 +189,82 @@ char value)
 	else return NULL;
 }
 
-listnode_t* order_of_ops(listnode_t* function)
+order_que_t* order_of_ops(listnode_t* function)
 {
-	listnode_t* highest_order = NULL;
-	for(;; function = function->next) {
-		if(function->next == NULL) {
-			return highest_order;
-		} else if(function->funct == NULL) {
+	int order = 0;
+	order_que_t* que = NULL;
+	for(;function->next != NULL; function = function->next) {
+		order = order / 10 * 10;
+		if(function->funct == NULL) {
 		} else if(function->funct[0] == '=') {
-			return highest_order;
+			return que;
 		} else if(function->funct[0] != '=') {
-			if((function->funct[0] == '+' || function->funct[0] == '-') && highest_order == NULL) {
-				highest_order = function;
-			} else if(function->funct[0] == '*' || function->funct[0] == '/') {
-				if(highest_order == NULL) {
-					highest_order = function;
-				} else if(highest_order->funct[0] == ('+' || '-')) {
-					highest_order = function;	
-				}
-			} else if(function->funct[0] == '(' || function->funct[0] == ')') {
+			if(function->funct[0] == '(' || function->funct[0] == ')') {
 				if(function->funct[0] == '('){
-					highest_order = function;
+					order += 10;
+				} else if (function->funct[0] == ')') {
+					order -= 10;
 				}
+			} else if(function->funct[0] == '+' || function->funct[0] == '-') {
+				order += 1;
+				que = insert_que(que, function, order);
+			} else if(function->funct[0] == '*' || function->funct[0] == '/') {
+				order += 2;
+				que = insert_que(que, function, order);
 			}
 		}
 	}
+	return que;
+
 }
 
 listnode_t* calculate(listnode_t* function)
 {
 	listnode_t* moving = function;
 	for(;function->next != NULL;) {
-		listnode_t* first = NULL;
-		first = order_of_ops(function);
-		if(first == NULL){
+		order_que_t* que;
+		que = order_of_ops(function);
+		printf("2");
+		if(que == NULL){
+			printf("3");
 			return function;
-		} else if(moving->next == first) {
-			if(first->funct[0] == '(') {
-			}else if(first->funct[0] == '*') {
-				moving->double_value[0] = moving->double_value[0] * first->next->double_value[0];
-				moving->next = moving->next->next->next;
-			} else if(first->funct[0] == '/') {
-				moving->double_value[0] = moving->double_value[0] / first->next->double_value[0];
-				moving->next = moving->next->next->next;
-			} else if(first->funct[0] == '+') {
-				moving->double_value[0] = moving->double_value[0] + first->next->double_value[0];
-				moving->next = moving->next->next->next;			
-			} else if(first->funct[0] == '-') {
-				moving->double_value[0] = moving->double_value[0] - first->next->double_value[0];
-				moving->next = moving->next->next->next;
+		} else  {
+			if(que->ptr->funct[0] == '*') {
+				printf("$$");
+				moving = deque(que, &que);
+				printf("@");
+				moving->previous->double_value[0] = moving->previous->double_value[0] * moving->next->double_value[0];
+				printf("#");
+				moving->previous->next = moving->next->next;
+				printf("%");
+				if(moving->previous->next != NULL) {
+					moving->previous->next->previous = moving->previous;
+				}
+			} else if(que->ptr->funct[0] == '/') {
+				moving = deque(que, &que);
+				moving->previous->double_value[0] = moving->previous->double_value[0] / moving->next->double_value[0];
+				moving->previous->next = moving->next->next;
+				if(moving->previous->next != NULL) {
+					moving->previous->next->previous = moving->previous;
+				}
+			} else if(que->ptr->funct[0] == '+') {
+				moving = deque(que, &que);
+				moving->previous->double_value[0] = moving->previous->double_value[0] + moving->next->double_value[0];
+				moving->previous->next = moving->next->next;
+				if(moving->previous->next != NULL) {
+					moving->previous->next->previous = moving->previous;
+				}		
+			} else if(que->ptr->funct[0] == '-') {
+				moving = deque(que, &que);
+				moving->previous->double_value[0] = moving->previous->double_value[0] - moving->next->double_value[0];
+				moving->previous->next = moving->next->next;
+				if(moving->previous->next != NULL) {
+					moving->previous->next->previous = moving->previous;
+				}
 			} else {
 				return NULL;
 			}
-		} else if(moving->next == NULL) {
-			moving = function; 
-		} else {
-			moving = moving->next;
-		}
+		} 
 	}
 	return function;
 

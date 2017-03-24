@@ -10,6 +10,7 @@ listnode_t* find_variable_value(listnode_t *function,const char variable)
 	right_side = right_side->next;
 	if(traverse_until(right_side, 'c', variable) != NULL) { /*determins which side the variable is on. more = 0 means left side*/
 		answer = calculate(function);
+		printf("1");
 		printf("%c equals %f\n", variable, answer->double_value[0]);
 		return answer;
 	} else {
