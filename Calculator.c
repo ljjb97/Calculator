@@ -61,4 +61,5 @@ int main(void)
 	input[0] = 0;
 	scanf(" %s", input);
 	find_variable_value(head, input[0]);
+	main();
 }

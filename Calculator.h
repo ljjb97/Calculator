@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+//A doubley linked list 
 typedef struct listnode {
     double* double_value;
     char* char_value;
@@ -11,6 +12,12 @@ typedef struct listnode {
 	struct listnode* previous;
 } listnode_t;
 
+/*A que structure that contains the order number 
+	int order_number	the order number is assigned based on bedmas
+	listnode_t * ptr 	is a pointer to the listnode containing the function
+	order_que* next 	is a pointer to the next order in the que
+	order_que* previous is a pointer to the previos order in the que 
+*/
 typedef struct order_que {
 	int order_number;
 	listnode_t * ptr;
@@ -18,6 +25,17 @@ typedef struct order_que {
 	struct order_que* previous;
 } order_que_t;
 
+
+/*
+	The function used to build a the listnode
+	Params:
+		next_link		Takes a pointer to the previous listnode
+		double_value	If the value passed in isn't 0 the listnode will contain a numerical value
+		char_value		If the value passed in isn't 0 the listnode will contain a character value
+		funct			If the value passed in isn't 0 the listnode will contain a mathematical expression
+	Return:
+		listnode_t* 	The function returns a pointer to the created listnode
+*/
 listnode_t *create_listnode_link(listnode_t* next_link,double double_value,
 char char_value, char funct)
 {
@@ -64,6 +82,15 @@ char char_value, char funct)
 	
 }
 
+/* 
+	This function appends a new listnode to the end of an existing listnode
+	Params:
+		end		the previous end of the listnode
+		k		A ascii value to determine if it is a variable or a mathematical expression and then stored in the listnode
+		i 		A numerical value to be stored in the listnode
+	Return:
+		listnode_t* a pointer to the newly created listnode
+*/
 listnode_t* append(listnode_t *end, int k, double i ) {
 	listnode_t* new_link;
 	if(i != 0) {
@@ -85,6 +112,15 @@ listnode_t* append(listnode_t *end, int k, double i ) {
 	return end;
 }
 
+/* 
+	inserts a new item into the order cue based on order
+	Params:
+		start		A pointer to the start of the que
+		link		A pointer to the listnode the order is based on
+		order		An int based upon the mathematical expression stored in the link used to place the order que
+	Return:
+		order_que_t*	Returns the start of the que via a temp value
+*/
 order_que_t* insert_que(order_que_t *start, listnode_t *link, int order)
 {
 	order_que_t *ptr, *temp = start;
@@ -116,18 +152,19 @@ order_que_t* insert_que(order_que_t *start, listnode_t *link, int order)
 	}
 }
 
+
+/* 
+
+*/
 listnode_t *deque(order_que_t *start, order_que_t **startad) 
 {
 	listnode_t *temp1 = start->ptr;
-	printf("8");
 	order_que_t *temp2 = start->next;
-	printf("9");
 	if(temp2 != NULL) {
 		temp2->previous = NULL;
 	}
 	*startad = temp2;
 	free(start);
-	printf("10");
 	return temp1;
 }
 
