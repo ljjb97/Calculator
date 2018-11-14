@@ -261,9 +261,7 @@ listnode_t* calculate(listnode_t* function)
 	for(;function->next != NULL;) {
 		order_que_t* que;
 		que = order_of_ops(function);
-		printf("2");
 		if(que == NULL){
-			printf("3");
 			return function;
 		} else  {
 			if(que->ptr->funct[0] == '*') {
